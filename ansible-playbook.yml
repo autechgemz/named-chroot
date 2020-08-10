@@ -1,0 +1,166 @@
+---
+- name: Ansible Provision
+  hosts: all
+  tasks:
+  - name: general setting
+    block:
+    - name: install tzdata
+      apk:
+        name:
+          - tzdata
+    - debug: var=timezone
+    - name: change timezone setting
+      file:
+        src: "/usr/share/zoneinfo/{{ timezone }}"
+        dest: /etc/localtime
+        state: link
+        force: yes
+    - name: install container-dependencies
+      apk:
+        name:
+          - runit
+          - su-exec
+        state: installed
+    - name: install build-dependencies
+      apk:
+        name:
+          - build-base
+          - linux-headers
+          - automake
+          - autoconf
+          - libtool
+          - git
+          - tar
+          - go
+        state: installed
+    - name: install library-dependencies
+      apk:
+        name:
+          - libevent-dev
+          - fstrm-dev
+          - protobuf-c-dev
+          - openssl-dev
+          - expat-dev
+          - libxml2-dev
+          - py3-ply
+          - libgcc
+          - libuv-dev
+          - libcap-dev
+        state: installed
+  - name: create named user
+    block:
+    - debug: var=named_version
+    - name: create named group
+      group:
+        name: "{{ named_user }}"
+        system: yes
+        state: present
+    - name: create named user
+      user:
+        name: "{{ named_user }}"
+        comment: "named server"
+        group: "{{ named_user }}"
+        home: "{{ named_datadir }}"
+        system: yes
+        shell: /sbin/nologin
+  - name: install named
+    block:
+    - name: create base directory
+      file:
+        path: "{{ named_root }}"
+        state: directory
+        owner: named
+        group: named
+    - name: download named tarball
+      get_url:
+        url: "https://ftp.isc.org/isc/bind9/{{ named_version }}/bind-{{ named_version }}.tar.xz"
+        dest: "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+    - name: extract named tarball
+      unarchive:
+        src: "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+        dest: "{{ named_root }}"
+    - name: build named
+      shell: |
+        ./configure \
+        --prefix={{ named_root }} \
+        --sysconfdir={{ named_confdir }} \
+        --localstatedir=/var \
+        --with-openssl=/usr \
+        --enable-linux-caps \
+        --with-libxml2 \
+        --enable-threads \
+        --enable-filter-aaaa \
+        --enable-ipv6 \
+        --enable-shared \
+        --enable-static \
+        --with-libtool \
+        --with-randomdev=/dev/random \
+        --enable-dnstap \
+        && make \
+        && make install
+      args:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: build golang-dnstap
+      shell: |
+        go get -u -v github.com/dnstap/golang-dnstap
+        go get -u -v github.com/dnstap/golang-dnstap/dnstap
+        go get -u -v github.com/farsightsec/golang-framestream
+      environment:
+        GOPATH: "{{ named_root }}"
+    - name: remove source files
+      file:
+        path: "{{ item }}"
+        force: yes
+        state: absent
+      with_items:
+        - "{{ named_root }}/bind-{{ named_version }}"
+        - "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+        - "{{ named_root }}/src"
+        - "{{ named_root }}/pkg"
+    - name: remove build-dependencies package
+      apk:
+        name:
+          - build-base
+          - automake
+          - autoconf
+          - libtool
+          - git
+          - tar
+          - go
+        state: absent
+  - name: setup named
+    block:
+    - name: copy named configurations
+      copy:
+        src: etc/named/
+        dest: "{{ named_root }}{{ named_confdir }}"
+        owner: named
+        group: named
+    - name: copy named vars
+      copy:
+        src: var/named/
+        dest: "{{ named_root }}{{ named_datadir }}"
+        owner: named
+        group: named
+    - name: create named directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: named
+        group: named
+      with_items:
+        - "{{ named_root }}/dev"
+    - name: make devices
+      shell: |
+        mknod {{ named_root }}/dev/random c 1 8 \
+        && mknod {{ named_root }}/dev/null c 1 3 \
+        && chown -R named.named {{ named_root }}
+  - name: setup runit service
+    block:
+    - name: copy service directory
+      copy:
+        src: services/
+        dest: /services
+        owner: root
+        group: root
+        mode: 0755

@@ -1,0 +1,30 @@
+*~
+*.bk
+*.o
+*.back
+*.orig
+.nfs*
+*.lock
+.*.swo
+*.swp
+.*.swp
+.project
+.settings
+# vagrant/Virtualbox
+.vagrant
+.vagrant.d
+# virtualenv
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+# Pycharm
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+data

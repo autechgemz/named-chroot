@@ -1,0 +1,71 @@
+{
+  "variables": {
+    "timezone": "Asia/Tokyo",
+    "image_from": "alpine:latest",
+    "named_root": "/chroot",
+    "named_user": "named",
+    "named_confdir": "/etc/named",
+    "named_datadir": "/var/named",
+    "named_version": "9.16.5"
+  },
+  "builders":[
+    {
+      "type": "docker",
+      "image": "{{user `image_from`}}",
+      "run_command": ["-dit", "{{.Image}}", "/bin/ash"],
+      "commit": true,
+      "changes": [
+        "ENV TZ {{user `timezone`}}",
+	"ENV PATH {{user `named_root`}}\/sbin:{{user `named_root`}}\/bin:$PATH",
+	"ENV GOPATH {{user `named_root`}}",
+        "VOLUME {{user `named_root`}}\/{{user `named_confdir`}}",
+        "VOLUME {{user `named_root`}}\/{{user `named_datadir`}}",
+        "EXPOSE 53\/tcp 53\/udp",
+        "ENTRYPOINT [ \"runsvdir\", \"-P\", \"\/services\/\" ]"
+      ]
+    }
+  ],
+  "provisioners":[
+    {
+      "type": "shell",
+      "inline": [
+        "apk update",
+        "apk upgrade --update --available",
+        "apk add --no-cache ansible python3",
+	"mkdir -p /tmp/ansible-local"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/",
+      "destination": "/tmp/ansible-local"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible-playbook.yml",
+      "staging_directory": "/tmp/ansible-local",
+      "extra_arguments": [
+        "-e timezone={{user `timezone`}}",
+        "-e named_root={{user `named_root`}}",
+        "-e named_user={{user `named_user`}}",
+        "-e named_confdir={{user `named_confdir`}}",
+        "-e named_datadir={{user `named_datadir`}}",
+        "-e named_version={{user `named_version`}}",
+        "-e ansible_python_interpreter=/usr/bin/python3"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apk del --no-cache ansible"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "local/docker-named-chroot",
+      "tags": "latest"
+    }
+  ]
+}

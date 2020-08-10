@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+export GOPATH
+exec su-exec named ${GOPATH}/bin/dnstap -u /chroot/var/run/named/dnstap.sock
