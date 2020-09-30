@@ -6,7 +6,7 @@
     "named_user": "named",
     "named_confdir": "/etc/named",
     "named_datadir": "/var/named",
-    "named_version": "9.16.5"
+    "named_version": "9.16.7"
   },
   "builders":[
     {
