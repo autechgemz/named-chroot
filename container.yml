@@ -1,0 +1,50 @@
+---
+- name: Ansible Provision
+  hosts: all
+  tasks:
+  - name: setup named
+    block:
+    - name: copy named configurations
+      copy:
+        src: etc/named/
+        dest: "{{ named_root }}{{ named_confdir }}"
+        owner: named
+        group: named
+    - name: set symlink configurations
+      file:
+        src: "/chroot/etc/named/{{ item }}" 
+        dest: "/etc/named/{{ item }}"
+        force: yes
+        follow: no
+        state: link
+      with_items:
+        - "named.conf"
+        - "rndc.key"
+    - name: copy named vars
+      copy:
+        src: var/named/
+        dest: "{{ named_root }}{{ named_datadir }}"
+        owner: named
+        group: named
+    - name: create named directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: named
+        group: named
+      with_items:
+        - "{{ named_root }}/dev"
+    - name: make devices
+      shell: |
+        mknod {{ named_root }}/dev/random c 1 8 \
+        && mknod {{ named_root }}/dev/null c 1 3 \
+        && chown -R named.named {{ named_root }}
+  - name: setup runit service
+    block:
+    - name: copy service directory
+      copy:
+        src: services/
+        dest: /services/
+        owner: root
+        group: root
+        mode: 0755

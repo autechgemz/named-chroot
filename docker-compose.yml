@@ -1,7 +1,7 @@
 version: "3"
 services:
   named:
-    image: local/docker-named-chroot
+    image: autechgemz/named-chroot
     container_name: named
     network_mode: host
     restart: always
