@@ -3,5 +3,8 @@ services:
   named:
     image: autechgemz/named-chroot
     container_name: named
-    network_mode: host
+    hostname: named
     restart: always
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"

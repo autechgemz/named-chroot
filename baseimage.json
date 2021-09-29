@@ -1,29 +1,36 @@
 {
   "variables": {
     "timezone": "Asia/Tokyo",
-    "image_from": "autechgemz/named-chroot-baseimage",
+    "image_from": "ubuntu:focal",
     "named_root": "/chroot",
     "named_user": "named",
     "named_confdir": "/etc/named",
-    "named_datadir": "/var/named"
+    "named_datadir": "/var/named",
+    "named_version": "9.16.21"
   },
   "builders":[
     {
       "type": "docker",
       "image": "{{user `image_from`}}",
       "run_command": ["-dit", "{{.Image}}", "/bin/bash"],
-      "commit": true,
-      "pull": false,
-      "changes": [
-        "ENV TZ {{user `timezone`}}",
-        "ENV PATH {{user `named_root`}}\/sbin:{{user `named_root`}}\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:$PATH",
-        "ENV GOPATH {{user `named_root`}}",
-        "EXPOSE 53\/tcp 53\/udp",
-        "ENTRYPOINT [ \"\/usr\/bin\/runsvdir\", \"-P\", \"\/services\/\" ]"
-      ]
+      "commit": true
     }
   ],
   "provisioners":[
+    {
+      "type": "file",
+      "source": "files/etc/apt/sources.list",
+      "destination": "/etc/apt/sources.list"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apt-get -y update",
+        "apt-get -y upgrade",
+        "apt-get -y install ansible python3 python3-apt",
+	"mkdir -p /tmp/ansible-local"
+      ]
+    },
     {
       "type": "file",
       "source": "files/",
@@ -31,7 +38,7 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "container.yml",
+      "playbook_file": "baseimage.yml",
       "staging_directory": "/tmp/ansible-local",
       "extra_arguments": [
         "-e timezone={{user `timezone`}}",
@@ -39,21 +46,15 @@
         "-e named_user={{user `named_user`}}",
         "-e named_confdir={{user `named_confdir`}}",
         "-e named_datadir={{user `named_datadir`}}",
+        "-e named_version={{user `named_version`}}",
         "-e ansible_python_interpreter=/usr/bin/python3"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "apt-get -y purge ansible python3-apt",
-        "apt-get -y autoremove"
       ]
     }
   ],
   "post-processors": [
     {
       "type": "docker-tag",
-      "repository": "autechgemz/named-chroot",
+      "repository": "autechgemz/named-chroot-baseimage",
       "tags": "latest"
     }
   ]

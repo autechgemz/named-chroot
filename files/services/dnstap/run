@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
+sleep 5
 export GOPATH
-exec su-exec named ${GOPATH}/bin/dnstap -u /chroot/var/run/named/dnstap.sock
+exec /usr/sbin/gosu named:named bash -c "${GOPATH}/bin/dnstap -u /chroot/var/run/named/dnstap.sock"

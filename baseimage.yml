@@ -1,0 +1,147 @@
+---
+- name: Ansible Provision
+  hosts: all
+  tasks:
+  - name: general setting
+    block:
+    - name: install tzdata
+      apt:
+        name:
+          - tzdata
+        install_recommends: no
+        state: present
+    - name: add universe repository
+      apt_repository:
+        repo: deb http://archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe 
+        state: present
+        update_cache: no
+    - name: update repository cache
+      apt:
+        update_cache: yes
+    - debug: var=timezone
+    - name: change timezone setting
+      file:
+        src: "/usr/share/zoneinfo/{{ timezone }}"
+        dest: /etc/localtime
+        state: link
+        force: yes
+    - name: install container-dependencies
+      apt:
+        name:
+          - runit
+          - wget
+          - gosu
+        install_recommends: no
+        state: present
+    - name: install build-dependencies
+      apt:
+        name:
+          - build-essential
+          - automake
+          - autoconf
+          - libtool
+          - git
+          - tar
+          - golang
+        install_recommends: yes
+        state: present
+    - name: install library-dependencies
+      apt:
+        name:
+          - libfstrm-dev
+          - protobuf-c-compiler
+          - libprotobuf-dev
+          - libprotobuf-c-dev
+          - libssl-dev
+          - libexpat1-dev
+          - libxml2-dev
+          - python3-ply
+          - libgcc1
+          - libuv1-dev
+          - libcap-dev
+        install_recommends: no
+        state: present
+  - name: create named user
+    block:
+    - debug: var=named_version
+    - name: create named group
+      group:
+        name: "{{ named_user }}"
+        system: yes
+        state: present
+    - name: create named user
+      user:
+        name: "{{ named_user }}"
+        comment: "named server"
+        group: "{{ named_user }}"
+        home: "{{ named_datadir }}"
+        system: yes
+        shell: /sbin/nologin
+  - name: install named
+    block:
+    - name: create base directory
+      file:
+        path: "{{ named_root }}"
+        state: directory
+        owner: named
+        group: named
+    - name: download named tarball
+      get_url:
+        url: "https://ftp.isc.org/isc/bind9/{{ named_version }}/bind-{{ named_version }}.tar.xz"
+        dest: "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+    - name: extract named tarball
+      unarchive:
+        src: "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+        dest: "{{ named_root }}"
+    - name: build named
+      shell: |
+        ./configure \
+        --prefix={{ named_root }} \
+        --sysconfdir={{ named_confdir }} \
+        --localstatedir=/var \
+        --with-openssl=/usr \
+        --enable-linux-caps \
+        --with-libxml2 \
+        --enable-threads \
+        --enable-filter-aaaa \
+        --enable-ipv6 \
+        --enable-shared \
+        --enable-static \
+        --with-libtool \
+        --with-randomdev=/dev/random \
+        --enable-dnstap \
+        && make \
+        && make install
+      args:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: build golang-dnstap
+      shell: |
+        go get -u -v github.com/dnstap/golang-dnstap
+        go get -u -v github.com/dnstap/golang-dnstap/dnstap
+        go get -u -v github.com/farsightsec/golang-framestream
+      environment:
+        GOPATH: "{{ named_root }}"
+    - name: remove source files
+      file:
+        path: "{{ item }}"
+        force: yes
+        state: absent
+      with_items:
+        - "{{ named_root }}/bind-{{ named_version }}"
+        - "{{ named_root }}/bind-{{ named_version }}.tar.xz"
+        - "{{ named_root }}/src"
+        - "{{ named_root }}/pkg"
+    - name: remove build-dependencies package
+      apt:
+        name:
+          - build-essential
+          - automake
+          - autoconf
+          - libtool
+          - git
+          - golang
+        install_recommends: no
+        autoremove: yes
+        autoclean: yes
+        purge: yes
+        state: absent

@@ -4,36 +4,27 @@
   tasks:
   - name: setup named
     block:
-    - name: copy named configurations
+    - name: "copy {{ named_root }}{{ named_confdir }}"
       copy:
         src: etc/named/
         dest: "{{ named_root }}{{ named_confdir }}"
-        owner: named
-        group: named
-    - name: set symlink configurations
-      file:
-        src: "/chroot/etc/named/{{ item }}" 
-        dest: "/etc/named/{{ item }}"
-        force: yes
-        follow: no
-        state: link
-      with_items:
-        - "named.conf"
-        - "rndc.key"
-    - name: copy named vars
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}" 
+        mode: 0755
+    - name: "copy {{ named_root }}{{ named_datadir }}"
       copy:
         src: var/named/
         dest: "{{ named_root }}{{ named_datadir }}"
-        owner: named
-        group: named
-    - name: create named directories
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+    - name: create device directory
       file:
-        path: "{{ item }}"
+        path: "{{ named_root }}/dev"
         state: directory
-        owner: named
-        group: named
-      with_items:
-        - "{{ named_root }}/dev"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
     - name: make devices
       shell: |
         mknod {{ named_root }}/dev/random c 1 8 \
@@ -44,7 +35,7 @@
     - name: copy service directory
       copy:
         src: services/
-        dest: /services/
+        dest: /services
         owner: root
         group: root
         mode: 0755
