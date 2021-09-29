@@ -54,7 +54,7 @@
   "post-processors": [
     {
       "type": "docker-tag",
-      "repository": "autechgemz/named-chroot-baseimage",
+      "repository": "autechgemz/named-baseimage",
       "tags": "latest"
     }
   ]
