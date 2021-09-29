@@ -61,7 +61,7 @@
     "named_datadir": "/var/named",
     "named_root": "/chroot",
     "named_user": "named",
-    "named_version": "9.16.12",
+    "named_version": "9.16.21",
     "timezone": "Asia/Tokyo"
   }
 }
