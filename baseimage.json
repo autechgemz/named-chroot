@@ -43,7 +43,7 @@
         "-e named_version={{user `named_version`}}",
         "-e ansible_python_interpreter=/usr/bin/python3"
       ],
-      "playbook_file": "image.yml",
+      "playbook_file": "baseimage.yml",
       "staging_directory": "/tmp/ansible-local",
       "type": "ansible-local"
     }

@@ -1,6 +1,6 @@
 all: image config
 image:
-	packer build image.json
+	packer build baseimage.json
 config:
 	packer build container.json
 push:
