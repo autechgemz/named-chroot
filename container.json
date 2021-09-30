@@ -23,7 +23,7 @@
   ],
   "post-processors": [
     {
-      "repository": "autechgemz/named-chroot",
+      "repository": "autechgemz/named",
       "tags": "latest",
       "type": "docker-tag"
     }
