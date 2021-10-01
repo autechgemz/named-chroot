@@ -93,7 +93,7 @@
       unarchive:
         src: "{{ named_root }}/bind-{{ named_version }}.tar.xz"
         dest: "{{ named_root }}"
-    - name: build named
+    - name: confiugre named
       shell: |
         ./configure \
         --prefix={{ named_root }} \
@@ -109,11 +109,16 @@
         --enable-static \
         --with-libtool \
         --with-randomdev=/dev/random \
-        --enable-dnstap \
-        && make \
-        && make install
+        --enable-dnstap
       args:
         chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: build named
+      make:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: install named
+      make:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+        target: install
     - name: build golang-dnstap
       shell: |
         go get -u -v github.com/dnstap/golang-dnstap
