@@ -1,7 +1,7 @@
 version: "3"
 services:
   named:
-    image: autechgemz/named-chroot
+    image: autechgemz/named
     container_name: named
     network_mode: host
     restart: always
