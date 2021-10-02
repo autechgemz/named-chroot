@@ -1,53 +1,4 @@
 {
-  "builders": [
-    {
-      "commit": true,
-      "image": "{{user `image_from`}}",
-      "run_command": [
-        "-dit",
-        "{{.Image}}",
-        "/bin/ash"
-      ],
-      "type": "docker"
-    }
-  ],
-  "post-processors": [
-    {
-      "repository": "autechgemz/named-baseimage",
-      "tags": "latest",
-      "type": "docker-tag"
-    }
-  ],
-  "provisioners": [
-    {
-      "inline": [
-        "apk update",
-        "apk upgrade --update --available",
-        "apk add --no-cache ansible python3 xz",
-        "mkdir -p /tmp/ansible-local"
-      ],
-      "type": "shell"
-    },
-    {
-      "destination": "/tmp/ansible-local",
-      "source": "files/",
-      "type": "file"
-    },
-    {
-      "extra_arguments": [
-        "-e timezone={{user `timezone`}}",
-        "-e named_root={{user `named_root`}}",
-        "-e named_user={{user `named_user`}}",
-        "-e named_confdir={{user `named_confdir`}}",
-        "-e named_datadir={{user `named_datadir`}}",
-        "-e named_version={{user `named_version`}}",
-        "-e ansible_python_interpreter=/usr/bin/python3"
-      ],
-      "playbook_file": "baseimage.yml",
-      "staging_directory": "/tmp/ansible-local",
-      "type": "ansible-local"
-    }
-  ],
   "variables": {
     "image_from": "alpine:latest",
     "named_confdir": "/etc/named",
@@ -56,6 +7,51 @@
     "named_user": "named",
     "named_version": "9.16.21",
     "timezone": "Asia/Tokyo"
-  }
+  },
+  "builders": [
+    {
+      "type": "docker",
+      "image": "{{user `image_from`}}",
+      "run_command": ["-dit", "{{.Image}}", "/bin/ash"],
+      "commit": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "apk update",
+        "apk upgrade --update --available",
+        "apk add --no-cache ansible python3 xz",
+        "mkdir -p /tmp/ansible-local"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/",
+      "destination": "/tmp/ansible-local"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "baseimage.yml",
+      "staging_directory": "/tmp/ansible-local",
+      "extra_arguments": [
+        "-e timezone={{user `timezone`}}",
+        "-e named_root={{user `named_root`}}",
+        "-e named_user={{user `named_user`}}",
+        "-e named_confdir={{user `named_confdir`}}",
+        "-e named_datadir={{user `named_datadir`}}",
+        "-e named_version={{user `named_version`}}",
+        "-e ansible_python_interpreter=/usr/bin/python3"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "repository": "autechgemz/named-baseimage",
+      "tags": "latest",
+      "type": "docker-tag"
+    }
+  ]
 }
 
