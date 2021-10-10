@@ -1,16 +1,7 @@
 {
   "builders": [
     {
-      "changes": [
-        "ENV TZ {{user `timezone`}}",
-        "ENV PATH {{user `named_root`}}/sbin:{{user `named_root`}}/bin:$PATH",
-        "ENV GOPATH {{user `named_root`}}",
-        "VOLUME {{user `named_root`}}/{{user `named_confdir`}}",
-        "VOLUME {{user `named_root`}}/{{user `named_datadir`}}",
-        "EXPOSE 53/tcp 53/udp",
-        "ENTRYPOINT [ \"/sbin/runsvdir\", \"-P\", \"/services/\" ]"
-      ],
-      "commit": true,
+      "export_path": "container.tar",
       "pull": false,
       "image": "{{user `image_from`}}",
       "run_command": [
@@ -24,8 +15,17 @@
   "post-processors": [
     {
       "repository": "autechgemz/named",
-      "tags": "latest",
-      "type": "docker-tag"
+      "tag": "latest",
+      "type": "docker-import",
+      "changes": [
+        "ENV TZ {{user `timezone`}}",
+        "ENV PATH {{user `named_root`}}/sbin:{{user `named_root`}}/bin:$PATH",
+        "ENV GOPATH {{user `named_root`}}",
+        "VOLUME {{user `named_root`}}/{{user `named_confdir`}}",
+        "VOLUME {{user `named_root`}}/{{user `named_datadir`}}",
+        "EXPOSE 53/tcp 53/udp",
+        "ENTRYPOINT [ \"/sbin/runsvdir\", \"-P\", \"/services/\" ]"
+      ]
     }
   ],
   "provisioners": [
@@ -63,4 +63,3 @@
     "timezone": "Asia/Tokyo"
   }
 }
-
