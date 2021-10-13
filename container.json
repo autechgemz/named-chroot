@@ -39,6 +39,7 @@
       "type": "shell",
       "inline": [
         "apt-get -y purge ansible python3-apt",
+        "apt-get -y autoclean",
         "apt-get -y autoremove"
       ]
     }
