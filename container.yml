@@ -76,6 +76,7 @@
         src: "{{ named_root }}{{ named_confdir }}/{{ item }}"
         dest: "/etc/named/{{ item }}"
         force: yes
+        follow: False
         state: link
       with_items:
         - rndc.key
