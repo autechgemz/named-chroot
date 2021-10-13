@@ -4,12 +4,51 @@
   tasks:
   - name: setup named
     block:
-    - name: "copy {{ named_root }}{{ named_confdir }}"
-      copy:
-        src: etc/named/
-        dest: "{{ named_root }}{{ named_confdir }}"
+    - name: "generate named configration"
+      file:
+        path: "{{ item }}"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+        state: directory
+      with_items:
+        - "{{ named_root }}{{named_confdir }}"
+        - "{{ named_root }}{{named_confdir }}/conf.d"
+    - template:
+        src: etc/named/named.conf
+        dest: "{{ named_root }}{{ named_confdir }}/named.conf"
         owner: "{{ named_user }}"
         group: "{{ named_user }}" 
+        mode: 0755
+    - template:
+        src: etc/named/conf.d/logging.conf
+        dest: "{{ named_root }}{{ named_confdir }}/conf.d/logging.conf"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+    - template:
+        src: etc/named/conf.d/acl.conf
+        dest: "{{ named_root }}{{ named_confdir }}/conf.d/acl.conf"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+    - template:
+        src: etc/named/conf.d/options.conf
+        dest: "{{ named_root }}{{ named_confdir }}/conf.d/options.conf"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+    - template:
+        src: etc/named/conf.d/zone-external.conf
+        dest: "{{ named_root }}{{ named_confdir }}/conf.d/zone-external.conf"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
+        mode: 0755
+    - template:
+        src: etc/named/conf.d/zone-internal.conf
+        dest: "{{ named_root }}{{ named_confdir }}/conf.d/zone-internal.conf"
+        owner: "{{ named_user }}"
+        group: "{{ named_user }}"
         mode: 0755
     - name: "copy {{ named_root }}{{ named_datadir }}"
       copy:
