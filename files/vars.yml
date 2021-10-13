@@ -1,0 +1,9 @@
+---
+named_dnstap_enable: False
+named_dnstap_messagetype:
+  - "auth"
+  - "resolver query"
+named_trusted_net:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
