@@ -27,7 +27,7 @@
       "inline": [
         "apt-get -y update",
         "apt-get -y upgrade",
-        "apt-get -y install ansible python3 python3-apt",
+        "apt-get -y install --no-install-recommends ansible python3 python3-apt",
 	"mkdir -p /tmp/ansible-local"
       ]
     },
