@@ -13,7 +13,10 @@
       "type": "docker",
       "image": "{{user `image_from`}}",
       "run_command": ["-dit", "{{.Image}}", "/bin/bash"],
-      "commit": true
+      "commit": true,
+      "changes": [
+        "ENV DEBIAN_FRONTEND noninteractive"
+      ]
     }
   ],
   "provisioners":[

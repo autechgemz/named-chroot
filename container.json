@@ -40,7 +40,9 @@
       "inline": [
         "apt-get -y purge ansible python3-apt",
         "apt-get -y autoclean",
-        "apt-get -y autoremove"
+        "apt-get -y autoremove",
+	"rm -rf /var/lib/apt/lists/*",
+	"rm -rf /var/cache/apt/*"
       ]
     }
   ],
