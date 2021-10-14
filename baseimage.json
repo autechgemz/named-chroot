@@ -41,7 +41,7 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "baseimage.yml",
+      "playbook_file": "playbooks/baseimage.yml",
       "staging_directory": "/tmp/ansible-local",
       "extra_arguments": [
         "-e timezone={{user `timezone`}}",

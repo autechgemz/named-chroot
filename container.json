@@ -24,7 +24,7 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "container.yml",
+      "playbook_file": "playbooks/container.yml",
       "staging_directory": "/tmp/ansible-local",
       "extra_arguments": [
         "-e timezone={{user `timezone`}}",
