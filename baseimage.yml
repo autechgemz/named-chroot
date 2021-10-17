@@ -63,6 +63,7 @@
           - libgcc1
           - libuv1-dev
           - libcap-dev
+          - libjson-c-dev
         install_recommends: no
         state: present
   - name: create named user
@@ -107,6 +108,7 @@
         --with-openssl=/usr \
         --enable-linux-caps \
         --with-libxml2 \
+        --with-libjson \
         --enable-threads \
         --enable-filter-aaaa \
         --enable-ipv6 \
