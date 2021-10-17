@@ -18,27 +18,23 @@
   ],
   "provisioners":[
     {
-      "type": "file",
-      "source": "files/",
-      "destination": "/tmp/ansible-local"
-    },
-    {
-      "type": "ansible-local",
-      "playbook_file": "playbooks/container.yml",
-      "staging_directory": "/tmp/ansible-local",
+      "type": "ansible",
+      "playbook_file": "container.yml",
+      "user": "root",
+      "ansible_env_vars": [
+        "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o AddKeysToAgent=no'"
+      ],
       "extra_arguments": [
         "-e timezone={{user `timezone`}}",
         "-e named_root={{user `named_root`}}",
         "-e named_user={{user `named_user`}}",
         "-e named_confdir={{user `named_confdir`}}",
-        "-e named_datadir={{user `named_datadir`}}",
-        "-e ansible_python_interpreter=/usr/bin/python3"
+        "-e named_datadir={{user `named_datadir`}}"
       ]
     },
     {
       "type": "shell",
       "inline": [
-        "apt-get -y purge ansible python3-apt",
         "apt-get -y autoclean",
         "apt-get -y autoremove",
 	"rm -rf /var/lib/apt/lists/*",

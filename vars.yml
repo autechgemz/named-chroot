@@ -1,5 +1,5 @@
 ---
-named_dnstap_enable: False
+named_dnstap_enable: True
 named_dnstap_messagetype:
   - "auth"
   - "resolver query"
