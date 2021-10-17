@@ -19,11 +19,6 @@ if [ -f /etc/named/bind.keys -a ! -f $BIND_KEYS ]; then
   mv /etc/named/bind.keys $BIND_KEYS
 fi
 
-BIND_ROOT_KEYS=${BIND_ROOT}/etc/named/bind.root.keys
-if [ ! -f $BIND_ROOT_KEYS ]; then
-  wget -q -O $BIND_ROOT_KEYS https://downloads.isc.org/isc/bind9/keys/9.11/bind.keys.v9_11
-fi
-
 for VIEW_DIRS in external internal ; do
   find ${BIND_ROOT}/var/named/${VIEW_DIRS} -type f -name root.cache -exec false {} + \
   && wget -q -O ${BIND_ROOT}/var/named/${VIEW_DIRS} https://www.internic.net/domain/named.root
