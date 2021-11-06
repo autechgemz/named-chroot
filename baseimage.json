@@ -5,7 +5,7 @@
     "named_datadir": "/var/named",
     "named_root": "/chroot",
     "named_user": "named",
-    "named_version": "9.16.21",
+    "named_version": "9.16.22",
     "timezone": "Asia/Tokyo"
   },
   "builders": [
