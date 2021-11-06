@@ -26,9 +26,9 @@
       "tag": "latest",
       "type": "docker-import",
       "changes": [
-        "ENV TZ {{user `timezone`}}",
-        "ENV PATH {{user `named_root`}}/sbin:{{user `named_root`}}/bin:$PATH",
-        "ENV GOPATH {{user `named_root`}}",
+        "ENV TZ={{user `timezone`}}",
+        "ENV PATH={{user `named_root`}}/sbin:{{user `named_root`}}/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "ENV GOPATH={{user `named_root`}}",
         "VOLUME {{user `named_root`}}/{{user `named_confdir`}}",
         "VOLUME {{user `named_root`}}/{{user `named_datadir`}}",
         "EXPOSE 53/tcp 53/udp",
