@@ -14,11 +14,6 @@ if [ ! -f $BIND_RNDC_KEY ]; then
   chown root.${BIND_USER} $BIND_RNDC_KEY
 fi
 
-for VIEW_DIRS in external internal ; do
-  find ${BIND_ROOT}/var/named/${VIEW_DIRS} -type f -name root.cache -exec false {} + \
-  && wget -q -O ${BIND_ROOT}/var/named/${VIEW_DIRS} https://www.internic.net/domain/named.root
-done
-
 for BIND_DIRS in etc var ; do
   find "${BIND_ROOT}/${BIND_DIRS}" -type d -exec chmod 0750 {} \;
   find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chmod 0640 {} \;
