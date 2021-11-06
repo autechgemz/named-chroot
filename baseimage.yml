@@ -8,6 +8,7 @@
       apk:
         name:
           - tzdata
+        no_cache: yes
     - debug: var=timezone
     - name: change timezone setting
       file:
@@ -20,6 +21,7 @@
         name:
           - runit
           - su-exec
+        no_cache: yes
         state: installed
     - name: install build-dependencies
       apk:
@@ -32,6 +34,7 @@
           - git
           - tar
           - go
+        no_cache: yes
         state: installed
     - name: install library-dependencies
       apk:
@@ -46,6 +49,7 @@
           - libgcc
           - libuv-dev
           - libcap-dev
+        no_cache: yes
         state: installed
   - name: create named user
     block:
@@ -128,4 +132,5 @@
           - tar
           - go
           - wget
+        no_cache: yes
         state: absent
