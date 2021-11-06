@@ -5,3 +5,5 @@ services:
     container_name: named
     network_mode: host
     restart: always
+    environment:
+      RUN_DNSTAP: "false"
