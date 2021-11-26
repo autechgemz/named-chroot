@@ -73,8 +73,8 @@
       file:
         path: "{{ named_root }}"
         state: directory
-        owner: named
-        group: named
+        owner: root
+        group: root
     - name: download named tarball
       get_url:
         url: "https://ftp.isc.org/isc/bind9/{{ named_version }}/bind-{{ named_version }}.tar.xz"
