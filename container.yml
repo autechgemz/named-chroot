@@ -10,16 +10,16 @@
       copy:
         src: files/etc/named/
         dest: "{{ named_root }}{{ named_confdir }}/"
-        owner: "{{ named_user }}"
-        group: "{{ named_user }}" 
+        owner: root
+        group: root
         mode: 0755
         directory_mode: yes
     - name: "copy named data"
       copy:
         src: files/var/named/
         dest: "{{ named_root }}{{ named_datadir }}"
-        owner: "{{ named_user }}"
-        group: "{{ named_user }}"
+        owner: root
+        group: root
         mode: 0755
     - name: create device directory
       file:
@@ -31,8 +31,7 @@
     - name: make devices
       shell: |
         mknod {{ named_root }}/dev/random c 1 8 \
-        && mknod {{ named_root }}/dev/null c 1 3 \
-        && chown -R named.named {{ named_root }}
+        && mknod {{ named_root }}/dev/null c 1 3
     - name: make symlink to chroot
       file:
         src: "{{ named_root }}{{ named_confdir }}/{{ item }}"
