@@ -8,8 +8,8 @@
       copy:
         src: etc/named/
         dest: "{{ named_root }}{{ named_confdir }}"
-        owner: named
-        group: named
+        owner: root
+        group: root
     - name: set symlink configurations
       file:
         src: "/chroot/etc/named/{{ item }}" 
@@ -30,15 +30,14 @@
       file:
         path: "{{ item }}"
         state: directory
-        owner: named
-        group: named
+        owner: root
+        group: root
       with_items:
         - "{{ named_root }}/dev"
     - name: make devices
       shell: |
         mknod {{ named_root }}/dev/random c 1 8 \
-        && mknod {{ named_root }}/dev/null c 1 3 \
-        && chown -R named.named {{ named_root }}
+        && mknod {{ named_root }}/dev/null c 1 3
   - name: setup runit service
     block:
     - name: copy service directory
