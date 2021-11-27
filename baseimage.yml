@@ -100,10 +100,16 @@
         --with-libtool \
         --with-randomdev=/dev/random \
         --enable-dnstap \
-        && make \
-        && make install
+        --with-tuning=large
       args:
         chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: build named
+      make:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+    - name: install named
+      make:
+        chdir: "{{ named_root }}/bind-{{ named_version }}/"
+        target: install
     - name: build golang-dnstap
       shell: |
         go get -u -v github.com/dnstap/golang-dnstap
