@@ -100,6 +100,7 @@
         --with-libtool \
         --with-randomdev=/dev/random \
         --enable-dnstap \
+        --with-tuning=large \
         && make \
         && make install
       args:
