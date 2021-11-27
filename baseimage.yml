@@ -116,7 +116,8 @@
         --enable-static \
         --with-libtool \
         --with-randomdev=/dev/random \
-        --enable-dnstap
+        --enable-dnstap \
+        --with-tuning=large
       args:
         chdir: "{{ named_root }}/bind-{{ named_version }}/"
     - name: build named
