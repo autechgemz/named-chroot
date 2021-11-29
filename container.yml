@@ -41,6 +41,8 @@
         state: link
       with_items:
         - rndc.key
+        - named.conf
+        - conf.d
   - name: setup runit service
     block:
     - name: copy service directory
