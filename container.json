@@ -13,16 +13,7 @@
       "image": "{{user `image_from`}}",
       "pull": false,
       "run_command": [ "-dit", "{{.Image}}", "/bin/ash" ],
-      "export_path": "container.tar",
-      "changes": [
-        "ENV TZ={{user `timezone`}}",
-        "ENV PATH={{user `named_root`}}/sbin:{{user `named_root`}}/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-        "ENV GOPATH={{user `named_root`}}",
-        "VOLUME {{user `named_root`}}/{{user `named_confdir`}}",
-        "VOLUME {{user `named_root`}}/{{user `named_datadir`}}",
-        "EXPOSE 53/tcp 53/udp",
-        "ENTRYPOINT [ \"/sbin/runsvdir\", \"-P\", \"/services/\" ]"
-      ]
+      "export_path": "container.tar"
     }
   ],
   "provisioners": [
@@ -55,7 +46,16 @@
     {
       "type": "docker-import",
       "repository": "autechgemz/named",
-      "tag": "latest"
+      "tag": "latest",
+      "changes": [
+        "ENV TZ={{user `timezone`}}",
+        "ENV PATH={{user `named_root`}}/sbin:{{user `named_root`}}/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "ENV GOPATH={{user `named_root`}}",
+        "VOLUME {{user `named_root`}}/{{user `named_confdir`}}",
+        "VOLUME {{user `named_root`}}/{{user `named_datadir`}}",
+        "EXPOSE 53/tcp 53/udp",
+        "ENTRYPOINT [ \"/sbin/runsvdir\", \"-P\", \"/services/\" ]"
+      ]
     }
   ]
 }
