@@ -48,9 +48,9 @@
       "repository": "autechgemz/named",
       "tag": "latest",
       "changes": [
-        "ENV TZ {{user `timezone`}}",
-        "ENV PATH {{user `named_root`}}\/sbin:{{user `named_root`}}\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:$PATH",
-        "ENV GOPATH {{user `named_root`}}",
+        "ENV TZ={{user `timezone`}}",
+        "ENV PATH={{user `named_root`}}\/sbin:{{user `named_root`}}\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:$PATH",
+        "ENV GOPATH={{user `named_root`}}",
         "EXPOSE 53\/tcp 53\/udp",
         "ENTRYPOINT [ \"runsvdir\", \"-P\", \"\/services\/\" ]"
       ]
