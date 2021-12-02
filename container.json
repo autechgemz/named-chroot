@@ -9,22 +9,11 @@
   },
   "builders": [
     {
-      "export_path": "container.tar",
-      "pull": false,
+      "type": "docker",
       "image": "{{user `image_from`}}",
-      "run_command": [
-        "-dit",
-        "{{.Image}}",
-        "/bin/ash"
-      ],
-      "type": "docker"
-    }
-  ],
-  "post-processors": [
-    {
-      "repository": "autechgemz/named",
-      "tag": "latest",
-      "type": "docker-import",
+      "pull": false,
+      "run_command": [ "-dit", "{{.Image}}", "/bin/ash" ],
+      "export_path": "container.tar",
       "changes": [
         "ENV TZ={{user `timezone`}}",
         "ENV PATH={{user `named_root`}}/sbin:{{user `named_root`}}/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -60,6 +49,13 @@
       "inline": [
         "apk del --no-cache ansible xz"
       ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "docker-import",
+      "repository": "autechgemz/named",
+      "tag": "latest"
     }
   ]
 }
