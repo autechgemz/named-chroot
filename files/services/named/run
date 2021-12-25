@@ -21,4 +21,4 @@ for BIND_DIRS in etc var ; do
   find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chown ${BIND_USER}.${BIND_USER} {} \;
 done
 
-exec ${BIND_ROOT}/sbin/named -u ${BIND_USER} -t ${BIND_ROOT} -c /etc/named/named.conf -f
+exec named -u ${BIND_USER} -t ${BIND_ROOT} -f
