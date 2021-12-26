@@ -1,8 +1,8 @@
-all: image config
+all: image
 image:
-	packer build baseimage.json
-config:
-	packer build container.json
+	docker build -t autechgemz/named -f Dockerfile .
+full:
+	docker build --no-cache -t autechgemz/named -f Dockerfile .
 push:
 	docker push autechgemz/named
 clean:
