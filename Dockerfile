@@ -2,7 +2,7 @@ FROM alpine:latest
 
 ARG LOCALTIME="Asia/Tokyo"
 
-ARG NAMED_VERSION="9.16.23"
+ARG NAMED_VERSION="9.16.24"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
