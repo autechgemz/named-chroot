@@ -12,7 +12,7 @@ ENV PATH="${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:${PATH}"
 
 RUN apk update \
  && apk upgrade --update --available \
- && apk add --no-cache --virtual .builddeps \
+ && apk add --no-cache \
     xz \
     build-base \
     linux-headers \
@@ -23,7 +23,6 @@ RUN apk update \
     tar \
     go \
     curl \
- && apk add --no-cache \
     tzdata \
     runit \
     su-exec \
@@ -71,7 +70,18 @@ RUN apk update \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
  && rm -rf ${NAMED_ROOT}/src \
  && rm -rf ${NAMED_ROOT}/pkg \
- && apk del --purge --no-cache .builddeps \
+ && apk del --no-cache --purge \
+    xz \
+    build-base \
+    linux-headers \
+    automake \
+    autoconf \
+    libtool \
+    git \
+    tar \
+    go \
+    curl \
+    protobuf-c-compiler \
  && mkdir -p ${NAMED_ROOT}/dev \
  && mknod ${NAMED_ROOT}/dev/random c 1 8 \
  && mknod ${NAMED_ROOT}/dev/null c 1 3 \
