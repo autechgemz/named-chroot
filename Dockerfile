@@ -99,4 +99,4 @@ VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
 
 EXPOSE 53/tcp 53/udp
 
-CMD ["/sbin/runsvdir", "-P", "/services/"]
+ENTRYPOINT ["/sbin/runsvdir", "-P", "/services/"]
