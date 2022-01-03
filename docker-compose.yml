@@ -7,3 +7,4 @@ services:
     restart: always
     environment:
       RUN_DNSTAP: "false"
+      TZ: "Asia/Tokyo"

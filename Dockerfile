@@ -1,7 +1,5 @@
 FROM alpine:latest
 
-ARG LOCALTIME="Asia/Tokyo"
-
 ARG NAMED_VERSION="9.16.24"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
@@ -87,8 +85,7 @@ RUN apk update \
  && mknod ${NAMED_ROOT}/dev/null c 1 3 \
  && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/named.conf ${NAMED_CONFDIR}/named.conf \
  && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/rndc.key ${NAMED_CONFDIR}/rndc.key \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/conf.d ${NAMED_CONFDIR}/conf.d \
- && ln -sf /usr/share/zoneinfo/${LOCALTIME} /etc/localtime
+ && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/conf.d ${NAMED_CONFDIR}/conf.d
 
 COPY files${NAMED_CONFDIR} ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files${NAMED_DATADIR} ${NAMED_ROOT}${NAMED_DATADIR}/
