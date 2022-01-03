@@ -92,7 +92,7 @@ RUN apk update \
 
 COPY files${NAMED_CONFDIR} ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files${NAMED_DATADIR} ${NAMED_ROOT}${NAMED_DATADIR}/
-COPY files/services /etc/service/
+COPY files/etc/service /etc/service/
 RUN chmod +x /etc/service/*/run
 
 VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
