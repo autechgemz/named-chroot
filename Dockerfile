@@ -87,8 +87,8 @@ RUN apk update \
  && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/rndc.key ${NAMED_CONFDIR}/rndc.key \
  && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/conf.d ${NAMED_CONFDIR}/conf.d
 
-COPY files${NAMED_CONFDIR} ${NAMED_ROOT}${NAMED_CONFDIR}/
-COPY files${NAMED_DATADIR} ${NAMED_ROOT}${NAMED_DATADIR}/
+COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
+COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
 COPY files/etc/service /etc/service/
 RUN chmod +x /etc/service/*/run
 
