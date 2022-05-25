@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG NAMED_VERSION="9.16.29"
+ARG NAMED_VERSION="9.18.3"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
@@ -34,6 +34,7 @@ RUN apk update \
     libgcc \
     libuv-dev \
     libcap-dev \
+    nghttp2-dev \
  && addgroup -S named \
  && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
  && mkdir -p $NAMED_ROOT \
@@ -52,7 +53,6 @@ RUN apk update \
     --enable-filter-aaaa \
     --enable-ipv6 \
     --enable-shared \
-    --enable-static \
     --with-libtool \
     --with-randomdev=/dev/random \
     --enable-dnstap \
