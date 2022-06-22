@@ -49,8 +49,6 @@ RUN apk update \
     --enable-linux-caps \
     --with-libxml2 \
     --enable-threads \
-    --enable-filter-aaaa \
-    --enable-ipv6 \
     --enable-shared \
     --enable-static \
     --with-libtool \
