@@ -44,8 +44,7 @@ RUN apk update \
  && cd ${NAMED_ROOT}/bind-${NAMED_VERSION} \
  && ./configure \
     --prefix=${NAMED_ROOT} \
-    --sysconfdir=${NAMED_CONFDIR} \
-    --localstatedir=/var \
+    --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
     --enable-linux-caps \
     --with-libxml2 \
@@ -78,10 +77,7 @@ RUN apk update \
     protobuf-c-compiler \
  && mkdir -p ${NAMED_ROOT}/dev \
  && mknod ${NAMED_ROOT}/dev/random c 1 8 \
- && mknod ${NAMED_ROOT}/dev/null c 1 3 \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/named.conf ${NAMED_CONFDIR}/named.conf \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/rndc.key ${NAMED_CONFDIR}/rndc.key \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/conf.d ${NAMED_CONFDIR}/conf.d
+ && mknod ${NAMED_ROOT}/dev/null c 1 3
 
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
