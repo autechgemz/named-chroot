@@ -49,14 +49,12 @@ RUN apk update \
     --with-openssl=/usr \
     --enable-linux-caps \
     --with-libxml2 \
-    --enable-threads \
     --enable-filter-aaaa \
     --enable-ipv6 \
     --enable-shared \
     --with-libtool \
     --with-randomdev=/dev/random \
     --enable-dnstap \
-    --with-tuning=large \
  && make \
  && make install \
  && cd ${NAMED_ROOT} \
