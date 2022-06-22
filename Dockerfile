@@ -49,8 +49,6 @@ RUN apk update \
     --with-openssl=/usr \
     --enable-linux-caps \
     --with-libxml2 \
-    --enable-filter-aaaa \
-    --enable-ipv6 \
     --enable-shared \
     --with-libtool \
     --with-randomdev=/dev/random \
