@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG NAMED_VERSION="9.18.3"
+ARG NAMED_VERSION="9.18.4"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
