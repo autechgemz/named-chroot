@@ -55,6 +55,8 @@ RUN apk update \
     --enable-dnstap \
  && make \
  && make install \
+ && rm -rf ${NAMED_ROOT}/include \
+ && rm -rf ${NAMED_ROOT}/share \
  && cd ${NAMED_ROOT} \
  && go get -u -v github.com/dnstap/golang-dnstap \
  && go get -u -v github.com/dnstap/golang-dnstap/dnstap \
