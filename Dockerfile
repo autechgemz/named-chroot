@@ -53,6 +53,9 @@ RUN apk update \
     --with-libtool \
     --with-randomdev=/dev/random \
     --enable-dnstap \
+    CC=gcc \
+    CFLAGS='-Os -fomit-frame-pointer -g -D_GNU_SOURCE' \
+    CPPFLAGS='-Os -fomit-frame-pointer' \
  && make \
  && make install \
  && rm -rf ${NAMED_ROOT}/include \
