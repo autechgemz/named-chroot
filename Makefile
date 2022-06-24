@@ -6,9 +6,7 @@ full:
 push:
 	docker push autechgemz/named
 clean:
-	docker-compose down
 	docker rm -v named
 distclean:
-	docker-compose down -v
-	docker rmi autechgemz/named-baseimage
+	docker rmi `docker images -f dangling=true -q` > /dev/null
 	docker rmi autechgemz/named
