@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG NAMED_VERSION="9.18.5"
+ARG NAMED_VERSION="9.18.9"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
@@ -58,12 +58,11 @@ RUN apk update \
     CPPFLAGS='-Os -fomit-frame-pointer' \
  && make \
  && make install \
+ && cd ${NAMED_ROOT} \
+ && go install github.com/dnstap/golang-dnstap/dnstap@latest \
+ && cd / \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
- && cd ${NAMED_ROOT} \
- && go get -u -v github.com/dnstap/golang-dnstap \
- && go get -u -v github.com/dnstap/golang-dnstap/dnstap \
- && go get -u -v github.com/farsightsec/golang-framestream \
  && cd / \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
