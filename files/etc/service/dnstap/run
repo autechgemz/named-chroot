@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
-export GOPATH
+DNSTAP_ROOT=${GOPATH:-"/chroot"}
+export DNSTAP_ROOT
 if [ "$RUN_DNSTAP" = true ]; then
   sleep 5
-  exec su-exec named ${GOPATH}/bin/dnstap -u /chroot/var/run/named/dnstap.sock
+  exec su-exec named ${DNSTAP_ROOT}/bin/dnstap -u ${DNSTAP_ROOT}/var/run/named/dnstap.sock
 fi

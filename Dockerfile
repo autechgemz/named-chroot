@@ -1,10 +1,11 @@
 FROM alpine:latest
 
-ARG NAMED_VERSION="9.16.31"
+ARG NAMED_VERSION="9.16.35"
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
 ARG NAMED_USER=named
+ARG GOPATH=${NAMED_ROOT}
 
 ENV PATH="${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:${PATH}"
 
@@ -58,9 +59,7 @@ RUN apk update \
  && make \
  && make install \
  && cd ${NAMED_ROOT} \
- && go get -u -v github.com/dnstap/golang-dnstap \
- && go get -u -v github.com/dnstap/golang-dnstap/dnstap \
- && go get -u -v github.com/farsightsec/golang-framestream \
+ && go install github.com/dnstap/golang-dnstap/dnstap@latest \
  && cd / \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
