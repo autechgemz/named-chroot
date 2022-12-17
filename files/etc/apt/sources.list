@@ -1,10 +1,10 @@
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal main restricted
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal-updates main restricted
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal universe
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal-updates universe
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal multiverse
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal-updates multiverse
-deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ focal-backports main restricted universe multiverse
-deb http://security.ubuntu.com/ubuntu/ focal-security main restricted
-deb http://security.ubuntu.com/ubuntu/ focal-security universe
-deb http://security.ubuntu.com/ubuntu/ focal-security multiverse
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy main restricted
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy-updates main restricted
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy universe
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy-updates universe
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy multiverse
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy-updates multiverse
+deb http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/ jammy-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted
+deb http://security.ubuntu.com/ubuntu/ jammy-security universe
+deb http://security.ubuntu.com/ubuntu/ jammy-security multiverse

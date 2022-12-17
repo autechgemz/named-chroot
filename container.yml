@@ -4,51 +4,51 @@
   vars_files:
     - vars.yml
   tasks:
-  - name: setup named
-    block:
-    - name: "copy named configration"
-      copy:
-        src: files/etc/named/
-        dest: "{{ named_root }}{{ named_confdir }}/"
-        owner: root
-        group: root
-        mode: 0755
-        directory_mode: yes
-    - name: make symlink to chroot
-      file:
-        src: "{{ named_root }}{{ named_confdir }}/{{ item }}"
-        dest: "/etc/named/{{ item }}"
-        force: yes
-        follow: False
-        state: link
-      with_items:
-        - rndc.key
-        - named.conf
-        - conf.d
-    - name: "copy named data"
-      copy:
-        src: files/var/named/
-        dest: "{{ named_root }}{{ named_datadir }}"
-        owner: root
-        group: root
-        mode: 0755
-    - name: create device directory
-      file:
-        path: "{{ named_root }}/dev"
-        state: directory
-        owner: "{{ named_user }}"
-        group: "{{ named_user }}"
-        mode: 0755
-    - name: make devices
-      shell: |
-        mknod {{ named_root }}/dev/random c 1 8 \
-        && mknod {{ named_root }}/dev/null c 1 3
-  - name: setup runit service
-    block:
-    - name: copy service directory
-      copy:
-        src: files/services/
-        dest: /services/
-        owner: root
-        group: root
-        mode: 0755
+    - name: Setup named
+      block:
+      - name: Copy named configration
+        copy:
+          src: files/etc/named/
+          dest: "{{ named_root }}{{ named_confdir }}/"
+          owner: root
+          group: root
+          mode: 0755
+          directory_mode: true
+      - name: Make symlink to chroot
+        file:
+          src: "{{ named_root }}{{ named_confdir }}/{{ item }}"
+          dest: "/etc/named/{{ item }}"
+          force: true
+          follow: false
+          state: link
+        with_items:
+          - rndc.key
+          - named.conf
+          - conf.d
+      - name: Copy named data
+        copy:
+          src: files/var/named/
+          dest: "{{ named_root }}{{ named_datadir }}"
+          owner: root
+          group: root
+          mode: 0755
+      - name: Create device directory
+        file:
+          path: "{{ named_root }}/dev"
+          state: directory
+          owner: "{{ named_user }}"
+          group: "{{ named_user }}"
+          mode: 0755
+      - name: Make device files
+        shell: |
+          mknod {{ named_root }}/dev/random c 1 8 \
+          && mknod {{ named_root }}/dev/null c 1 3
+    - name: Setup runit service
+      block:
+      - name: Copy service directory
+        copy:
+          src: files/services/
+          dest: /services/
+          owner: root
+          group: root
+          mode: 0755

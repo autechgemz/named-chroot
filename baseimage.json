@@ -1,12 +1,12 @@
 {
   "variables": {
     "timezone": "Asia/Tokyo",
-    "image_from": "ubuntu:focal",
+    "image_from": "ubuntu:jammy",
     "named_root": "/chroot",
     "named_user": "named",
     "named_confdir": "/etc/named",
     "named_datadir": "/var/named",
-    "named_version": "9.16.23"
+    "named_version": "9.18.9"
   },
   "builders":[
     {
@@ -15,7 +15,8 @@
       "run_command": ["-dit", "{{.Image}}", "/bin/bash"],
       "commit": true,
       "changes": [
-        "ENV DEBIAN_FRONTEND noninteractive"
+        "ENV DEBIAN_FRONTEND noninteractive",
+        "ENV GOPATH {{user `named_root`}}"
       ]
     }
   ],
@@ -31,7 +32,7 @@
         "apt-get -y update",
         "apt-get -y upgrade",
         "apt-get -y install --no-install-recommends python3 python3-apt",
-	"mkdir -p /tmp/ansible-local"
+	      "mkdir -p /tmp/ansible-local"
       ]
     },
     {

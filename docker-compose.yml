@@ -9,4 +9,4 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
     environment:
-      RUN_DNSTAP: "false"
+      RUN_DNSTAP: "true"
