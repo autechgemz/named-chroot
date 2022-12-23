@@ -3,23 +3,23 @@ FROM ubuntu:jammy
 ENV TZ Asia/Tokyo
 ENV LANG C
 
-ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_VERSION=9.18.10
+ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_USER=named
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
 
-ENV GOPATH=$NAMED_ROOT
+ARG GOPATH=$NAMED_ROOT
 ENV PATH=${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 
 COPY files/etc/apt/sources.list /etc/apt/sources.list
+
 RUN apt-get update -y \
  && apt-get install --no-install-recommends -y \
     tzdata \
     ca-certificates \
     runit \
-    wget \
     curl \
     gosu \
     build-essential \
@@ -29,6 +29,7 @@ RUN apt-get update -y \
     git \
     tar \
     golang \
+    libfstrm0 \
     libfstrm-dev \
     protobuf-c-compiler \
     libprotobuf-dev \
@@ -46,6 +47,7 @@ RUN apt-get update -y \
     libnghttp2-dev \
  && useradd -r -d ${NAMED_ROOT}${NAMED_DATADIR} -s /sbin/nologin -M $NAMED_USER \
  && mkdir -p $NAMED_ROOT \
+ && chown $NAMED_USER.$NAMED_USER $NAMED_ROOT \
  && cd $NAMED_ROOT \
  && curl https://ftp.isc.org/isc/bind9/${NAMED_VERSION}/bind-${NAMED_VERSION}.tar.xz -o $NAMED_ROOT/bind-${NAMED_VERSION}.tar.xz \
  && tar Jxf bind-${NAMED_VERSION}.tar.xz \
@@ -62,14 +64,15 @@ RUN apt-get update -y \
     --with-tuning=large \
     --with-randomdev=/dev/random \
     --enable-dnstap \
+    --with-libfstrm \
+    --with-protobuf-c \
  && make \
  && make install \
  && cd ${NAMED_ROOT} \
- && go install github.com/dnstap/golang-dnstap/dnstap@latest \
+ && go install -v github.com/dnstap/golang-dnstap/dnstap@latest \
  && cd / \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
- && cd / \
  && rm -f ${NAMED_ROOT}/bind-${NAMED_VERSION}.tar.xz \
  && rm -rf ${NAMED_ROOT}/bind-${NAMED_VERSION} \
  && rm -rf ${NAMED_ROOT}/src \
@@ -94,7 +97,8 @@ RUN apt-get update -y \
  && truncate -s 0 /var/log/*log \
  && mkdir -p ${NAMED_ROOT}/dev \
  && mknod ${NAMED_ROOT}/dev/random c 1 8 \
- && mknod ${NAMED_ROOT}/dev/null c 1 3
+ && mknod ${NAMED_ROOT}/dev/null c 1 3 \
+ && chmod 666 ${NAMED_ROOT}/dev/*
 
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/

@@ -21,12 +21,12 @@ fi
 
 for VIEW_DIRS in external internal ; do
   find ${BIND_ROOT}/var/named/${VIEW_DIRS} -type f -name root.cache -exec false {} + \
-  && wget -q -O ${BIND_ROOT}/var/named/${VIEW_DIRS} https://www.internic.net/domain/named.root
+  && curl -s -o ${BIND_ROOT}/var/named/${VIEW_DIRS} https://www.internic.net/domain/named.root
 done
 
 for BIND_DIRS in etc var ; do
-  find "${BIND_ROOT}/${BIND_DIRS}" -type d -exec chmod 0750 {} \;
-  find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chmod 0640 {} \;
+  find "${BIND_ROOT}/${BIND_DIRS}" -type d -exec chmod 0755 {} \;
+  find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chmod 0644 {} \;
   find "${BIND_ROOT}/${BIND_DIRS}" -type d -exec chown ${BIND_USER}.${BIND_USER} {} \;
   find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chown ${BIND_USER}.${BIND_USER} {} \;
 done
