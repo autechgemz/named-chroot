@@ -3,6 +3,7 @@ set -e
 
 BIND_ROOT=/chroot
 BIND_USER=named
+BIND_CONF=/etc/named/named.conf
 
 PATH=${BIND_ROOT}/sbin:$PATH
 export PATH
@@ -21,4 +22,4 @@ for BIND_DIRS in etc var ; do
   find "${BIND_ROOT}/${BIND_DIRS}" -type f -exec chown ${BIND_USER}.${BIND_USER} {} \;
 done
 
-exec named -u ${BIND_USER} -t ${BIND_ROOT} -f
+exec named -u ${BIND_USER} -t ${BIND_ROOT} -c ${BIND_CONF} -f

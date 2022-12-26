@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG NAMED_VERSION="9.16.35"
+ARG NAMED_VERSION
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
@@ -35,6 +35,7 @@ RUN apk update \
     libgcc \
     libuv-dev \
     libcap-dev \
+    nghttp2-dev \
  && addgroup -S named \
  && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
  && mkdir -p $NAMED_ROOT \
@@ -44,22 +45,24 @@ RUN apk update \
  && cd ${NAMED_ROOT}/bind-${NAMED_VERSION} \
  && ./configure \
     --prefix=${NAMED_ROOT} \
-    --sysconfdir=${NAMED_CONFDIR} \
-    --localstatedir=/var \
+    --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
     --enable-linux-caps \
     --with-libxml2 \
-    --enable-threads \
     --enable-shared \
-    --enable-static \
     --with-libtool \
     --with-randomdev=/dev/random \
     --enable-dnstap \
-    --with-tuning=large \
+    CC=gcc \
+    CFLAGS='-Os -fomit-frame-pointer -g -D_GNU_SOURCE' \
+    CPPFLAGS='-Os -fomit-frame-pointer' \
  && make \
  && make install \
  && cd ${NAMED_ROOT} \
  && go install github.com/dnstap/golang-dnstap/dnstap@latest \
+ && cd / \
+ && rm -rf ${NAMED_ROOT}/include \
+ && rm -rf ${NAMED_ROOT}/share \
  && cd / \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
@@ -79,10 +82,7 @@ RUN apk update \
     protobuf-c-compiler \
  && mkdir -p ${NAMED_ROOT}/dev \
  && mknod ${NAMED_ROOT}/dev/random c 1 8 \
- && mknod ${NAMED_ROOT}/dev/null c 1 3 \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/named.conf ${NAMED_CONFDIR}/named.conf \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/rndc.key ${NAMED_CONFDIR}/rndc.key \
- && ln -sf ${NAMED_ROOT}/${NAMED_CONFDIR}/conf.d ${NAMED_CONFDIR}/conf.d
+ && mknod ${NAMED_ROOT}/dev/null c 1 3
 
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/

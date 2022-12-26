@@ -5,6 +5,11 @@ services:
     container_name: named
     network_mode: host
     restart: always
+    healthcheck:
+      test: ["CMD","dig","@localhost","localhost","+norec"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
     environment:
       RUN_DNSTAP: "false"
       TZ: "Asia/Tokyo"
