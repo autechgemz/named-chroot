@@ -1,8 +1,6 @@
-all: image config
+all: image
 image:
-	packer build baseimage.json
-config:
-	packer build container.json
+	docker build -t autechgemz/named .
 push:
 	docker push autechgemz/named
 clean:
@@ -10,5 +8,4 @@ clean:
 	docker rm -v named
 distclean:
 	docker-compose down -v
-	docker rmi autechgemz/named-baseimage
 	docker rmi autechgemz/named

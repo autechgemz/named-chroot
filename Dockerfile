@@ -4,13 +4,13 @@ ENV TZ Asia/Tokyo
 ENV LANG C
 
 ARG NAMED_VERSION=9.18.10
+
 ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_USER=named
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
 
-ARG GOPATH=$NAMED_ROOT
 ENV PATH=${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 
 COPY files/etc/apt/sources.list /etc/apt/sources.list
@@ -21,29 +21,19 @@ RUN apt-get update -y \
     ca-certificates \
     runit \
     curl \
-    gosu \
     build-essential \
     automake \
     autoconf \
     libtool \
-    git \
     tar \
-    golang \
-    libfstrm0 \
-    libfstrm-dev \
-    protobuf-c-compiler \
-    libprotobuf-dev \
-    libprotobuf-c-dev \
     libssl-dev \
     libexpat1-dev \
     libxml2-dev \
+    python3-minimal \
     python3-ply \
-    python3-dev \
     libgcc1 \
     libuv1-dev \
     libcap-dev \
-    libjson-c-dev \
-    libevent-dev \
     libnghttp2-dev \
  && useradd -r -d ${NAMED_ROOT}${NAMED_DATADIR} -s /sbin/nologin -M $NAMED_USER \
  && mkdir -p $NAMED_ROOT \
@@ -56,20 +46,14 @@ RUN apt-get update -y \
     --prefix=${NAMED_ROOT} \
     --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
-    --enable-linux-caps \
     --with-libxml2 \
-    --with-libjson \
+    --without-libjson \
     --enable-shared \
     --with-libtool \
     --with-tuning=large \
     --with-randomdev=/dev/random \
-    --enable-dnstap \
-    --with-libfstrm \
-    --with-protobuf-c \
  && make \
  && make install \
- && cd ${NAMED_ROOT} \
- && go install -v github.com/dnstap/golang-dnstap/dnstap@latest \
  && cd / \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
@@ -82,11 +66,11 @@ RUN apt-get update -y \
     automake \
     autoconf \
     libtool \
-    git \
-    golang \
+    perl \
+    python3 \
+    python3.10 \
     xz-utils \
     bzip2 \
-    protobuf-c-compiler \
  && apt-get clean -y \
  && apt-get purge -y \
  && apt autopurge -y \
