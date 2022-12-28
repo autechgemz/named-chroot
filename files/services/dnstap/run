@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+export GOPATH
+if [ "$RUN_DNSTAP" = true ]; then
+  sleep 5
+  if test -e ${GOPATH}/var/run/named/dnstap.sock ; then
+    exec /usr/sbin/gosu named:named bash -c ${GOPATH}/bin/dnstap -u ${GOPATH}/var/run/named/dnstap.sock
+  fi
+fi
