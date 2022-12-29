@@ -20,8 +20,7 @@ RUN apk update \
     tar \
     curl \
     tzdata \
-    runit \
-    su-exec \
+    tini \
     openssl-dev \
     expat-dev \
     libxml2-dev \
@@ -69,12 +68,12 @@ RUN apk update \
  && mknod -m 666 ${NAMED_ROOT}/dev/random c 1 8 \
  && mknod -m 666 ${NAMED_ROOT}/dev/null c 1 3
 
-COPY files/etc/service /etc/service/
-RUN chmod +x /etc/service/*/run
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
 EXPOSE 53/tcp 53/udp
-ENTRYPOINT ["runsvdir", "-P", "/etc/service"]
+ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
 
 FROM baseimage
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
