@@ -10,9 +10,9 @@ image:
 full:
 	docker build --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) --no-cache -f Dockerfile .
 push:
-	docker push $(BIND_VERSION)/$(IMAGE_ID)
+	docker push $(REGISTRY)/$(IMAGE_ID)
 clean:
 	docker rm -v $(IMAGE_ID)
 distclean:
 	docker rmi `docker images -f dangling=true -q` > /dev/null
-	docker rmi $(BIND_VERSION)/$(IMAGE_ID)
+	docker rmi $(REGISTRY)/$(IMAGE_ID)
