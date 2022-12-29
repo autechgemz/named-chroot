@@ -11,5 +11,4 @@ services:
       timeout: 10s
       retries: 3
     environment:
-      RUN_DNSTAP: "false"
       TZ: "Asia/Tokyo"
