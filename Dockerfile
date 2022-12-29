@@ -24,6 +24,7 @@ RUN apk update \
     openssl-dev \
     expat-dev \
     libxml2-dev \
+    json-c-dev \
     py3-ply \
     libgcc \
     libuv-dev \
@@ -43,6 +44,7 @@ RUN apk update \
     --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
     --with-libxml2 \
+    --with-json-c \
     --enable-shared \
     --disable-static \
     --with-jemalloc \
