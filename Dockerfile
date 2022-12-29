@@ -30,6 +30,7 @@ RUN apk update \
     libuv-dev \
     libcap-dev \
     nghttp2-dev \
+    jemalloc-dev \
  && addgroup -S named \
  && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
  && mkdir -m 755 -p $NAMED_ROOT \
@@ -41,11 +42,10 @@ RUN apk update \
     --prefix=${NAMED_ROOT} \
     --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
-    --enable-linux-caps \
     --with-libxml2 \
     --enable-shared \
-    --with-libtool \
-    --with-randomdev=/dev/random \
+    --disable-static \
+    --with-jemalloc \
     CC=gcc \
     CFLAGS='-Os -fomit-frame-pointer -g -D_GNU_SOURCE' \
     CPPFLAGS='-Os -fomit-frame-pointer' \
@@ -56,8 +56,6 @@ RUN apk update \
  && rm -rf ${NAMED_ROOT}/share \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
- && rm -rf ${NAMED_ROOT}/src \
- && rm -rf ${NAMED_ROOT}/pkg \
  && apk del --no-cache --purge \
     xz \
     build-base \
