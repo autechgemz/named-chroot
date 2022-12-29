@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:latest AS baseimage
 
 ARG NAMED_VERSION
 ARG NAMED_ROOT=/chroot
@@ -84,13 +84,13 @@ RUN apk update \
  && mknod ${NAMED_ROOT}/dev/random c 1 8 \
  && mknod ${NAMED_ROOT}/dev/null c 1 3
 
-COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
-COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
 COPY files/etc/service /etc/service/
 RUN chmod +x /etc/service/*/run
 
 VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
-
 EXPOSE 53/tcp 53/udp
-
 ENTRYPOINT ["runsvdir", "-P", "/etc/service"]
+
+FROM baseimage
+COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
+COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
