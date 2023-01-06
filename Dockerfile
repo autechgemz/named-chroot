@@ -74,7 +74,7 @@ RUN apk update \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
+VOLUME ["${NAMED_ROOT}${NAMED_CONFDIR}", "${NAMED_ROOT}${NAMED_DATADIR}"]
 EXPOSE 53/tcp 53/udp
 ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
 
