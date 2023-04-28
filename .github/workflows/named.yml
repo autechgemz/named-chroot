@@ -1,0 +1,57 @@
+name: build-named
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master      
+  workflow_dispatch:
+    inputs:
+      no-cache:
+        description: "Build docker images with no cache"
+        default: false
+        required: false
+        type: boolean
+
+env:
+  NAMED_VERSION: 9.18.14
+  TAG: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Login to docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          provenance: false
+          push: true
+          build-args: NAMED_VERSION=${BIND_VERSION}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/named:latest
+          no-cache: ${{ inputs.no-cache == true }}
+
+  check:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    outputs:
+      named: ${{ steps.named.outputs.stdout }}
+    steps:
+      - name: Check named
+        id: named
+        run: docker run --rm -t --entrypoint "" autechgemz/named:latest /chroot/sbin/named -V
