@@ -45,7 +45,7 @@ jobs:
     needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
-      named: ${{ steps.named.outputs.stdout }}
+      named-bin: ${{ steps.named.outputs.stdout }}
     steps:
       - name: Login to docker
         uses: docker/login-action@v2
@@ -53,6 +53,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Run named
+        run: docker run --rm -t -d named autechgemz/named:latest
+
       - name: Check named
-        id: named
+        id: named-bin
         run: docker run --rm -t --entrypoint "" autechgemz/named:latest /chroot/sbin/named -V
+
+      - name: Check named-checkconf
+        run: docker exec -t named named-checkconf -t /chroot /etc/named/named.conf
+
+  clean:
+    needs: [ check ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove named
+        runs: |
+          docker rmi -f autechgemz/named:latest
+          docker images
+        shell: bash
+
