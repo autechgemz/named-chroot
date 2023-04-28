@@ -42,7 +42,7 @@ jobs:
           file: ./Dockerfile
           provenance: false
           push: true
-          build-args: NAMED_VERSION=${BIND_VERSION}
+          build-args: NAMED_VERSION=${NAMED_VERSION}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/named:latest
           no-cache: ${{ inputs.no-cache == true }}
 
