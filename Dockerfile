@@ -37,7 +37,8 @@ RUN apk update \
  && chown ${NAMED_USER}:${NAMED_USER} ${NAMED_ROOT} \
  && curl https://ftp.isc.org/isc/bind9/${NAMED_VERSION}/bind-${NAMED_VERSION}.tar.xz -o $NAMED_ROOT/bind-${NAMED_VERSION}.tar.xz \
  && cd ${NAMED_ROOT} \
- && tar Jxvf bind-${NAMED_VERSION}.tar.xz \
+ && xz -d bind-${NAMED_VERSION}.tar.xz \
+ && tar xvf bind-${NAMED_VERSION}.tar \
  && cd ${NAMED_ROOT}/bind-${NAMED_VERSION} \
  && ./configure \
     --prefix=${NAMED_ROOT} \
