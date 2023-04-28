@@ -47,6 +47,12 @@ jobs:
     outputs:
       named: ${{ steps.named.outputs.stdout }}
     steps:
+      - name: Login to docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Check named
         id: named
         run: docker run --rm -t --entrypoint "" autechgemz/named:latest /chroot/sbin/named -V
