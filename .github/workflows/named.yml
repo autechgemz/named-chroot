@@ -35,16 +35,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          provenance: false
-          push: true
-          build-args: NAMED_VERSION=${NAMED_VERSION}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/named:latest
-          no-cache: ${{ inputs.no-cache == true }}
+      - name: Build Image
+        run: make
+
+      - name: Push Image
+        run: make push
 
   check:
     needs: [ build ]
