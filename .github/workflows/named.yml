@@ -18,7 +18,7 @@ on:
         type: boolean
 
 env:
-  NAMED_VERSION: 9.18.14
+  BIND_VERSION: 9.18.14
   TAG: latest
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
             NAMED_VERSION=${NAMED_VERSION}
           tags: autechgemz/named:latest
         env:
-          NAMED_VERSION=${NAMED_VERSION}
+          NAMED_VERSION=$BIND_VERSION
 
   check:
     needs: [ build ]
