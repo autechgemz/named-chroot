@@ -1,11 +1,10 @@
-FROM alpine:latest
+FROM alpine:latest AS baseimage
 
 ARG NAMED_VERSION
 ARG NAMED_ROOT=/chroot
 ARG NAMED_CONFDIR=/etc/named
 ARG NAMED_DATADIR=/var/named
 ARG NAMED_USER=named
-ARG GOPATH=${NAMED_ROOT}
 
 ENV PATH="${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:${PATH}"
 
@@ -18,27 +17,24 @@ RUN apk update \
     automake \
     autoconf \
     libtool \
-    git \
     tar \
-    go \
     curl \
     tzdata \
-    runit \
-    su-exec \
-    libevent-dev \
-    fstrm-dev \
-    protobuf-c-dev \
+    tini \
     openssl-dev \
     expat-dev \
     libxml2-dev \
+    json-c-dev \
     py3-ply \
     libgcc \
     libuv-dev \
     libcap-dev \
     nghttp2-dev \
+    jemalloc-dev \
  && addgroup -S named \
  && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
- && mkdir -p $NAMED_ROOT \
+ && mkdir -m 755 -p $NAMED_ROOT \
+ && chown ${NAMED_USER}:${NAMED_USER} ${NAMED_ROOT} \
  && curl https://ftp.isc.org/isc/bind9/${NAMED_VERSION}/bind-${NAMED_VERSION}.tar.xz -o $NAMED_ROOT/bind-${NAMED_VERSION}.tar.xz \
  && cd ${NAMED_ROOT} \
  && tar Jxvf bind-${NAMED_VERSION}.tar.xz \
@@ -47,27 +43,21 @@ RUN apk update \
     --prefix=${NAMED_ROOT} \
     --sysconfdir=${NAMED_ROOT}${NAMED_CONFDIR} \
     --with-openssl=/usr \
-    --enable-linux-caps \
     --with-libxml2 \
+    --with-json-c \
     --enable-shared \
-    --with-libtool \
-    --with-randomdev=/dev/random \
-    --enable-dnstap \
+    --disable-static \
+    --with-jemalloc \
     CC=gcc \
     CFLAGS='-Os -fomit-frame-pointer -g -D_GNU_SOURCE' \
     CPPFLAGS='-Os -fomit-frame-pointer' \
  && make \
  && make install \
- && cd ${NAMED_ROOT} \
- && go install github.com/dnstap/golang-dnstap/dnstap@latest \
  && cd / \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
- && cd / \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
  && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
- && rm -rf ${NAMED_ROOT}/src \
- && rm -rf ${NAMED_ROOT}/pkg \
  && apk del --no-cache --purge \
     xz \
     build-base \
@@ -75,22 +65,19 @@ RUN apk update \
     automake \
     autoconf \
     libtool \
-    git \
     tar \
-    go \
     curl \
-    protobuf-c-compiler \
- && mkdir -p ${NAMED_ROOT}/dev \
- && mknod ${NAMED_ROOT}/dev/random c 1 8 \
- && mknod ${NAMED_ROOT}/dev/null c 1 3
+ && mkdir -m 755 -p ${NAMED_ROOT}/dev \
+ && mknod -m 666 ${NAMED_ROOT}/dev/random c 1 8 \
+ && mknod -m 666 ${NAMED_ROOT}/dev/null c 1 3
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+VOLUME ["${NAMED_ROOT}${NAMED_CONFDIR}", "${NAMED_ROOT}${NAMED_DATADIR}"]
+EXPOSE 53/tcp 53/udp
+ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
+
+FROM baseimage
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
-COPY files/etc/service /etc/service/
-RUN chmod +x /etc/service/*/run
-
-VOLUME ["$NAMED_ROOT/$NAMED_CONFDIR", "$NAMED_ROOT/$NAMED_DATADIR"]
-
-EXPOSE 53/tcp 53/udp
-
-ENTRYPOINT ["runsvdir", "-P", "/etc/service"]
