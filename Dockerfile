@@ -58,7 +58,7 @@ RUN --mount=type=cache,target=/root/.apk apk update \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
- && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
+ && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar \
  && apk del --no-cache --purge \
     xz \
     build-base \

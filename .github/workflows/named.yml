@@ -48,6 +48,8 @@ jobs:
           build-args: |
             NAMED_VERSION=${NAMED_VERSION}
           tags: autechgemz/named:latest
+        env:
+          NAMED_VERSION=${NAMED_VERSION}
 
   check:
     needs: [ build ]
