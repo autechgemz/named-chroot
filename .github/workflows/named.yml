@@ -7,6 +7,11 @@ on:
   pull_request:
     branches:
       - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
   workflow_dispatch:
     inputs:
       no-cache:
@@ -16,7 +21,7 @@ on:
         type: boolean
 
 env:
-  NAMED_VERSION: 9.18.14
+  BIND_VERSION: 9.18.14
   TAG: latest
 
 jobs:
@@ -44,8 +49,10 @@ jobs:
           context: .
           push: true
           build-args: |
-            NAMED_VERSION=${NAMED_VERSION}
+            NAMED_VERSION=${{ env.BIND_VERSION }}
           tags: autechgemz/named:latest
+        env:
+          NAMED_VERSION: ${{ env.BIND_VERSION }}
 
   check:
     needs: [ build ]
