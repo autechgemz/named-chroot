@@ -8,7 +8,7 @@ ARG NAMED_USER=named
 
 ENV PATH="${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:${PATH}"
 
-RUN apk update \
+RUN --mount=type=cache,target=/root/.apk apk update \
  && apk upgrade --update --available \
  && apk add --no-cache \
     xz \
