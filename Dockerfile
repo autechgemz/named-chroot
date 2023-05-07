@@ -31,6 +31,7 @@ RUN apk update \
     libcap-dev \
     nghttp2-dev \
     jemalloc-dev \
+    userspace-rcu-dev \
  && addgroup -S named \
  && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
  && mkdir -m 755 -p $NAMED_ROOT \

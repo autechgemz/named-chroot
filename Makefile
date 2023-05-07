@@ -1,4 +1,4 @@
-BIND_VERSION := 9.18.14
+BIND_VERSION := 9.19.12
 
 IMAGE_TAG    := latest
 REGISTRY     := autechgemz
