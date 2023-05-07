@@ -46,10 +46,10 @@ jobs:
           context: .
           push: true
           build-args: |
-            NAMED_VERSION=${NAMED_VERSION}
+            NAMED_VERSION=${{ env.BIND_VERSION }}
           tags: autechgemz/named:latest
         env:
-          NAMED_VERSION=$BIND_VERSION
+          NAMED_VERSION: ${{ env.BIND_VERSION }}
 
   check:
     needs: [ build ]
