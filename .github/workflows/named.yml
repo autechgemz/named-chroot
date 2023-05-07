@@ -47,8 +47,6 @@ jobs:
           build-args: |
             NAMED_VERSION=${{ env.BIND_VERSION }}
           tags: autechgemz/named:latest
-        env:
-          NAMED_VERSION: ${{ env.BIND_VERSION }}
 
   check:
     needs: [ build ]
@@ -63,7 +61,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Run named
-        run: docker run --rm -t -d named autechgemz/named:latest
+        run: docker run --rm -t -d --name named autechgemz/named:latest
 
       - name: Check named
         id: named-bin
