@@ -3,7 +3,7 @@ FROM ubuntu:jammy AS named-baseimage
 ENV TZ Asia/Tokyo
 ENV LANG C
 
-ARG NAMED_VERSION=9.18.10
+ARG NAMED_VERSION=9.18.18
 
 ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_USER=named
@@ -111,3 +111,4 @@ FROM named-baseimage
 
 COPY files/etc/named ${NAMED_ROOT}${NAMED_CONFDIR}/
 COPY files/var/named ${NAMED_ROOT}${NAMED_DATADIR}/
+
