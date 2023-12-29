@@ -42,7 +42,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            NAMED_VERSION=${{ env.BIND_VERSION }}
+            NAMED_VERSION=${{ vars.BIND_VERSION }}
           tags: autechgemz/named:latest
 
   check:
