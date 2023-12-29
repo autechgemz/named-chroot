@@ -16,9 +16,6 @@ on:
         required: false
         type: boolean
 
-env:
-  TAG: latest
-
 jobs:
   build:
     runs-on: ubuntu-latest
