@@ -3,7 +3,7 @@ FROM ubuntu:jammy AS named-baseimage
 ENV TZ Asia/Tokyo
 ENV LANG C
 
-ARG NAMED_VERSION=9.18.21
+ARG NAMED_VERSION=9.18.25
 
 ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_USER=named
