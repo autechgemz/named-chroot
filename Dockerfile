@@ -1,9 +1,9 @@
-FROM ubuntu:jammy AS named-baseimage
+FROM ubuntu:noble AS named-baseimage
 
-ENV TZ Asia/Tokyo
-ENV LANG C
+ENV TZ=Asia/Tokyo
+ENV LANG=C
 
-ARG NAMED_VERSION=9.18.25
+ARG NAMED_VERSION
 
 ARG DEBIAN_FRONTEND=noninterractive
 ARG NAMED_USER=named
@@ -83,7 +83,7 @@ RUN apt-get update -y \
     libtool \
     perl \
     python3 \
-    python3.10 \
+    python3.12 \
     xz-utils \
     bzip2 \
     golang \

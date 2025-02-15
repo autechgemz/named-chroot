@@ -1,11 +1,18 @@
+BIND_VERSION := 9.18.33
+
+IMAGE_TAG    := latest
+REGISTRY     := autechgemz
+IMAGE_ID     := named
+
 all: image
 image:
-	docker build -t autechgemz/named .
+	docker build --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) -f Dockerfile .
+full:
+	docker build --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) --no-cache -f Dockerfile .
 push:
-	docker push autechgemz/named
+	docker push $(REGISTRY)/$(IMAGE_ID)
 clean:
-	docker-compose down
-	docker rm -v named
+	docker rm -v $(IMAGE_ID)
 distclean:
-	docker-compose down -v
-	docker rmi autechgemz/named
+	docker rmi `docker images -f dangling=true -q` > /dev/null
+	docker rmi $(REGISTRY)/$(IMAGE_ID)
