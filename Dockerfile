@@ -32,8 +32,8 @@ RUN apk update \
     nghttp2-dev \
     jemalloc-dev \
     userspace-rcu-dev \
- && addgroup -S named \
- && adduser -S -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
+ && addgroup -S $NAMED_USER \
+ && adduser -S $NAMED_USER -D -H -h $NAMED_DATADIR -s /sbin/nologin -G $NAMED_USER $NAMED_USER \
  && mkdir -m 755 -p $NAMED_ROOT \
  && chown ${NAMED_USER}:${NAMED_USER} ${NAMED_ROOT} \
  && curl https://ftp.isc.org/isc/bind9/${NAMED_VERSION}/bind-${NAMED_VERSION}.tar.xz -o $NAMED_ROOT/bind-${NAMED_VERSION}.tar.xz \
