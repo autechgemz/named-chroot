@@ -1,4 +1,4 @@
-all: pre image config
+all: image config
 
 pre:
 	packer plugins install github.com/hashicorp/docker
