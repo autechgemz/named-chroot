@@ -26,6 +26,7 @@
     - name: install build-dependencies
       apk:
         name:
+          - xz
           - build-base
           - linux-headers
           - automake
@@ -33,6 +34,7 @@
           - libtool
           - git
           - tar
+          - curl
           - go
         no_cache: yes
         state: installed
@@ -45,10 +47,13 @@
           - openssl-dev
           - expat-dev
           - libxml2-dev
+          - json-c-dev
           - py3-ply
           - libgcc
           - libuv-dev
           - libcap-dev
+          - nghttp2-dev
+          - jemalloc-dev
         no_cache: yes
         state: installed
   - name: create named user
@@ -92,15 +97,16 @@
         --with-openssl=/usr \
         --enable-linux-caps \
         --with-libxml2 \
-        --enable-threads \
-        --enable-filter-aaaa \
-        --enable-ipv6 \
+        --with-json-c \
         --enable-shared \
-        --enable-static \
+        --disable-static \
+        --with-jemalloc \
         --with-libtool \
         --with-randomdev=/dev/random \
         --enable-dnstap \
-        --with-tuning=large
+        CC=gcc \
+        CFLAGS='-Os -fomit-frame-pointer -g -D_GNU_SOURCE' \
+        CPPFLAGS='-Os -fomit-frame-pointer'
       args:
         chdir: "{{ named_root }}/bind-{{ named_version }}/"
     - name: build named
@@ -112,6 +118,7 @@
         target: install
     - name: build golang-dnstap
       shell: |
+        go mod init dnstap-build
         go get -u -v github.com/dnstap/golang-dnstap
         go get -u -v github.com/dnstap/golang-dnstap/dnstap
         go get -u -v github.com/farsightsec/golang-framestream
