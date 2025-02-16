@@ -12,7 +12,7 @@
         group: root
     - name: set symlink configurations
       file:
-        src: "/chroot/etc/named/{{ item }}" 
+        src: "/chroot/etc/named/{{ item }}"
         dest: "/etc/named/{{ item }}"
         force: yes
         follow: no

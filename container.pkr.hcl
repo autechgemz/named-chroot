@@ -91,7 +91,7 @@ build {
       "VOLUME ${var.named_root}/${var.named_confdir}",
       "VOLUME ${var.named_root}/${var.named_datadir}",
       "EXPOSE 53/tcp 53/udp",
-      "ENTRYPOINT [ \"/sbin/runsvdir\", \"-P\", \"/services/\" ]"
+      "ENTRYPOINT [ \"/usr/sbin/runsvdir\", \"-P\", \"/services/\" ]"
     ]
   }
 }
