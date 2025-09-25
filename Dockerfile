@@ -8,7 +8,7 @@ ARG NAMED_USER=named
 
 ENV PATH="${NAMED_ROOT}/sbin:${NAMED_ROOT}/bin:${PATH}"
 
-RUN apk update \
+RUN --mount=type=cache,target=/root/.apk apk update \
  && apk upgrade --update --available \
  && apk add --no-cache \
     xz \
@@ -37,7 +37,8 @@ RUN apk update \
  && chown ${NAMED_USER}:${NAMED_USER} ${NAMED_ROOT} \
  && curl https://ftp.isc.org/isc/bind9/${NAMED_VERSION}/bind-${NAMED_VERSION}.tar.xz -o $NAMED_ROOT/bind-${NAMED_VERSION}.tar.xz \
  && cd ${NAMED_ROOT} \
- && tar Jxvf bind-${NAMED_VERSION}.tar.xz \
+ && xz -d bind-${NAMED_VERSION}.tar.xz \
+ && tar xvf bind-${NAMED_VERSION}.tar \
  && cd ${NAMED_ROOT}/bind-${NAMED_VERSION} \
  && ./configure \
     --prefix=${NAMED_ROOT} \
@@ -57,7 +58,7 @@ RUN apk update \
  && rm -rf ${NAMED_ROOT}/include \
  && rm -rf ${NAMED_ROOT}/share \
  && rm -rf ${NAMED_ROOT}/bind-$NAMED_VERSION \
- && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar.xz \
+ && rm -f ${NAMED_ROOT}/bind-$NAMED_VERSION.tar \
  && apk del --no-cache --purge \
     xz \
     build-base \
