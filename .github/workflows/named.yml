@@ -8,6 +8,9 @@ on:
     branches:
       - master
       - development
+    paths:
+      - "*"
+      - "!**.md"
   workflow_dispatch:
     inputs:
       no-cache:

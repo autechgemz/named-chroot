@@ -1,4 +1,4 @@
-BIND_VERSION := 9.18.33
+BIND_VERSION := 9.18.39
 
 IMAGE_TAG    := latest
 REGISTRY     := autechgemz
@@ -6,9 +6,9 @@ IMAGE_ID     := named
 
 all: image
 image:
-	docker build --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) -f Dockerfile .
+	docker buildx build --platform=linux/amd64 --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) -f Dockerfile .
 full:
-	docker build --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) --no-cache -f Dockerfile .
+	docker buildx build --platform=linux/amd64 --build-arg NAMED_VERSION=$(BIND_VERSION) -t $(REGISTRY)/$(IMAGE_ID) --no-cache -f Dockerfile .
 push:
 	docker push $(REGISTRY)/$(IMAGE_ID)
 clean:
