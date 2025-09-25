@@ -12,7 +12,7 @@ BIND_RNDC_KEY=${BIND_ROOT}/etc/named/rndc.key
 if [ ! -f $BIND_RNDC_KEY ]; then
   rndc-confgen -b 512 -a -c $BIND_RNDC_KEY > /dev/null 2>&1
   chmod 0440 $BIND_RNDC_KEY
-  chown root.${BIND_USER} $BIND_RNDC_KEY
+  chown root:${BIND_USER} $BIND_RNDC_KEY
 fi
 
 for BIND_DIRS in etc var ; do
